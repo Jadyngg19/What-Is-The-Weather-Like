@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>5 Day Weather Dashboard</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+
+  <body>
+    <h1>5 Day Weather Dashboard</h1>
+
+    <form id="search-form">
+      <input type="text" id="city-input" placeholder="Enter a city" />
+      <button type="submit">Search</button>
+    </form>
+
+    <div id="past-searches"></div>
+
+    <div id="weather-results"></div>
+
+    <script>
+      // API Key for OpenWeatherMap
+      const apiKey = "Y52de64d1b3a04d9998a9dcb1948bc9cc";
+
+      // Array to store past search queries
+      let pastSearches = [];
+
+      // Get elements from the DOM
+      const searchForm = $("#search-form");
+      const cityInput = $("#city-input");
+      const pastSearchesDiv = $("#past-searches");
+      const weatherResultsDiv = $("#weather-results");
+
+      // Function to get weather data and update the UI
+      const getWeatherData = (city) => {
+        // Call OpenWeatherMap API
+        $.ajax({
+          url: `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`,
+          type: "GET",
+          dataType: "json",
+          success: function (data) {
+            // Clear previous weather results
+            weatherResultsDiv.empty();
+
+            // Loop through the weather data and display the results
+            data.list.forEach((forecast) => {
+              // Extract the date, temperature, and icon from the forecast
+              const date = forecast.dt_txt.split(" ")[0];
+              const temp = Math.round(forecast.main.temp - 273.15);
+              const icon = `https://openweathermap.org/img/w/${forecast.weather[0].icon}.png`;
+
+              // Create a div to hold the weather data for each day
+              const forecastDiv = $("<div>").addClass("forecast");
+
+              // Add the date, temperature, and icon to the forecast div
+              $("<p>").text(date).appendTo(forecastDiv);
+              $("<img>").attr("src", icon).appendTo(forecastDiv);
+              $("<p>").html(`${temp} &#8451;`).appendTo(forecastDiv);
+
+              // Add the forecast div to the weather results div
+              forecastDiv.appendTo(weatherResultsDiv);
+            });
+
+            // Add the city to the list of past searches
+            if (!pastSearches.includes(city)) {
+              pastSearches.push(city);
+              $("<button>")
+                .text(city)
+                .click(() => getWeatherData(city))
+                .appendTo(pastSearchesDiv);
+            }
+          },
+          error: function () {
+            alert("Could not get weather data. Please try again later.");
+          },
+        });
+      };
+
+      // Handle form submission
+      searchForm.submit((event) => {
+        event.preventDefault();
+        const city = cityInput.val();
+        getWeatherData(city);
+      });
+    </script>
+
+    <style>
+      .forecast {
+        display: inline-block;
+        text-align: center;
+        margin: 10px;
+        border: 1px solid black;
+        padding: 10px;
+      }
+      img {
+        width: 50px;
+      }
+    </style>
+  </body>
+</html>
