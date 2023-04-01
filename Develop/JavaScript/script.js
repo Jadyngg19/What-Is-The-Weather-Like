@@ -1,84 +1,72 @@
-const API_KEY = 'your_api_key_here';
-const searchForm = document.getElementById('search-form');
-const cityInput = document.getElementById('city-input');
-const pastSearches = document.getElementById('past-searches');
-const weatherResults = document.getElementById('weather-results');
-let cities = [];
+document.addEventListener("DOMContentLoaded", function() {
 
-// Fetch weather data from API
-async function getWeatherData(city) {
-  const url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&units=metric`;
-  const response = await fetch(url);
-  const data = await response.json();
-  return data;
-}
+const API_KEY = "52de64d1b3a04d9998a9dcb1948bc9cc";
+const API_URL = "https://api.openweathermap.org/data/2.5/forecast";
 
-// Add a new city to the list of past searches
-function addCityToList(city) {
-  const button = document.createElement('button');
-  button.innerText = city;
-  button.addEventListener('click', () => {
-    cityInput.value = city;
-    searchForm.dispatchEvent(new Event('submit'));
-  });
-  pastSearches.appendChild(button);
-}
+// Get references to HTML elements
+const searchForm = document.querySelector("#search-form");
+const cityInput = document.querySelector("#city-input");
+const pastSearches = document.querySelector("#past-searches");
+const weatherResults = document.querySelector("#weather-results");
 
-// Display the weather data for a city
-function displayWeatherData(city, data) {
-  const forecasts = data.list.filter((forecast) => forecast.dt_txt.includes('12:00:00'));
-  const cityTitle = document.createElement('h2');
-  cityTitle.innerText = city;
-  weatherResults.innerHTML = '';
-  weatherResults.appendChild(cityTitle);
-  forecasts.forEach((forecast) => {
-    const forecastDiv = document.createElement('div');
-    forecastDiv.classList.add('forecast');
-    const date = document.createElement('p');
-    date.innerText = new Date(forecast.dt_txt).toLocaleDateString();
-    forecastDiv.appendChild(date);
-    const icon = document.createElement('img');
-    icon.src = `https://openweathermap.org/img/w/${forecast.weather[0].icon}.png`;
-    forecastDiv.appendChild(icon);
-    const temp = document.createElement('p');
-    temp.innerText = `${Math.round(forecast.main.temp)} °C`;
-    forecastDiv.appendChild(temp);
-    const desc = document.createElement('p');
-    desc.innerText = forecast.weather[0].description;
-    forecastDiv.appendChild(desc);
-    weatherResults.appendChild(forecastDiv);
-  });
-}
+// Event listener for form submission
+searchForm.addEventListener("submit", function(event) {
+  event.preventDefault(); // Prevent default form submission behavior
 
-// Handle form submit event
-searchForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  const city = cityInput.value.trim();
-  if (city === '') {
-    return;
-  }
-  try {
-    const data = await getWeatherData(city);
-    cities = cities.filter((c) => c !== city);
-    cities.unshift(city);
-    while (pastSearches.firstChild) {
-      pastSearches.removeChild(pastSearches.firstChild);
-    }
-    cities.forEach((c) => addCityToList(c));
-    displayWeatherData(city, data);
-  } catch (error) {
-    console.error(error);
-    alert('An error occurred while fetching weather data.');
-  }
-});
+  const city = cityInput.value.trim(); // Get city value from input and trim whitespace
 
-// Load past searches from local storage
-if (localStorage.getItem('cities')) {
-  cities = JSON.parse(localStorage.getItem('cities'));
-  cities.forEach((c) => addCityToList(c));
-}
+  // Make API call to OpenWeather API
+  fetch(`${API_URL}?q=${city}&units=imperial&appid=${API_KEY}`)
+    .then(response => response.json())
+    .then(data => {
+      // Check if city has been searched before
+      if (!localStorage.getItem(city)) {
+        // If city has not been searched before, add it to past searches list
+        const pastSearch = document.createElement("p");
+        pastSearch.textContent = city;
+        pastSearch.addEventListener("click", function() {
+          // If past search is clicked, perform new search for that city
+          cityInput.value = city;
+          searchForm.dispatchEvent(new Event("submit"));
+        });
+        pastSearches.appendChild(pastSearch);
+        localStorage.setItem(city, true);
+      }
 
-// Save past searches to local storage when the page is closed
-window.addEventListener('beforeunload', () => {
-  localStorage.setItem('cities', JSON.stringify(cities));
+      // Clear weather results div
+      weatherResults.innerHTML = "";
+
+      // Loop through forecast data and create HTML elements to display
+      for (let i = 0; i < data.list.length; i += 8) {
+        const forecast = data.list[i];
+        const date = new Date(forecast.dt * 1000);
+        const iconURL = `https://openweathermap.org/img/w/${forecast.weather[0].icon}.png`;
+
+        const forecastDiv = document.createElement("div");
+        forecastDiv.classList.add("forecast");
+
+        const dateP = document.createElement("p");
+        dateP.textContent = date.toLocaleDateString();
+        forecastDiv.appendChild(dateP);
+
+        const iconImg = document.createElement("img");
+        iconImg.src = iconURL;
+        forecastDiv.appendChild(iconImg);
+
+        const tempP = document.createElement("p");
+        tempP.textContent = `${Math.round(forecast.main.temp)}°F`;
+        forecastDiv.appendChild(tempP);
+
+        const descP = document.createElement("p");
+        descP.textContent = forecast.weather[0].description;
+        forecastDiv.appendChild(descP);
+
+        weatherResults.appendChild(forecastDiv);
+      }
+    })
+    .catch(error => console.log(error));
+
+  // Clear input field after search
+  cityInput.value = "";
+  }); 
 });
