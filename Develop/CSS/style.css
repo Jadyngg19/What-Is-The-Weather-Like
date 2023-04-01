@@ -38,6 +38,8 @@ button[type="submit"] {
 /* Style the past searches section */
 #past-searches {
   margin: 20px 0;
+  width: 10%;
+  float: left;
 }
 
 /* Style the weather results section */
@@ -46,12 +48,15 @@ button[type="submit"] {
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+  width: 90%;
+  float: left;
 }
 
 .forecast {
   background-color: #fff;
   display: flex;
   width: 100px; 
+  height: 369px; 
   flex-direction: column;
   align-items: center;
   justify-content: center;
