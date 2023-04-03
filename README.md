@@ -12,7 +12,7 @@ User-friendly design: The dashboard is easy to use and navigate, with a clean an
 
 ## Usage
 
-To use the Weather Dashboard, enter the name of a city in the search bar and press enter or click on the search button. The dashboard will then display the current weather data and the five-day forecast for that city. To access past search data, click on the city you want to revisit on the laft hand side of the screen.
+To use the Weather Dashboard, enter the name of a city in the search bar and press enter or click on the search button. The dashboard will then display the current weather data and the five-day forecast for that city. To access past search data, click on the city you want to revisit on the left hand side of the screen.
 
 ![Image of the Whole Dashboard](./Develop/Images/Screenshot%202023-04-03%20at%208.32.20%20AM.png)
 ![Image of Past Searches Section](./Develop/Images/Screenshot%202023-04-03%20at%208.32.57%20AM.png)
