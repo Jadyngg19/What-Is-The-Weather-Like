@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Clear weather results div
     weatherResults.innerHTML = "";
     todayForecast.innerHTML = ""; 
-    forecastHeaderDiv.innerHTML = ""; 
+    forecastHeaderDiv.innerHTML = "";
 
     // Create current day weather div
     const currentWeatherDiv = document.createElement("div");
