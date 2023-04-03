@@ -9,18 +9,24 @@
   </head>
 
   <body>
-    <h1>5 Day Weather Dashboard</h1>
+    <h1>Weather Dashboard</h1>
 
     <form id="search-form">
       <input type="text" id="city-input" placeholder="Enter a city" />
       <button type="submit">Search</button>
-    </form>
+    </form> 
+
+    <br /> 
 
     <div id="past-searches">
       <span style="text-decoration: underline; font-weight: bold; font-size: large;">Past Searches:</span> 
       <br />
     </div>
-    <div id="weather-results"></div> 
-    </style>
+    <div class="city-info">
+      <div id="current-weather"></div>
+      <div id="forecast-header"></div>
+      <div id="weather-results"></div> 
+    </div>
+   
   </body>
 </html>

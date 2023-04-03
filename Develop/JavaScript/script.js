@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", function() {
   const cityInput = document.querySelector("#city-input");
   const pastSearches = document.querySelector("#past-searches");
   const weatherResults = document.querySelector("#weather-results");
+  const todayForecast = document.querySelector("#current-weather"); 
+  const forecastHeaderDiv = document.querySelector("#forecast-header"); 
 
   function clearLocalStorageOnPageReload() {
     localStorage.clear();
@@ -67,41 +69,101 @@ document.addEventListener("DOMContentLoaded", function() {
   function renderWeatherData(data) {
     // Clear weather results div
     weatherResults.innerHTML = "";
+    todayForecast.innerHTML = ""; 
+    forecastHeaderDiv.innerHTML = ""; 
+
+    // Create current day weather div
+    const currentWeatherDiv = document.createElement("div");
+    currentWeatherDiv.classList.add("current");
+    currentWeatherDiv.setAttribute("style", "display: block;")
+
+    // Get current day weather data
+    const currentWeather = data.list[0];
+    const currentWeatherDate = new Date(currentWeather.dt * 1000);
+    const currentWeatherIconURL = `https://openweathermap.org/img/w/${currentWeather.weather[0].icon}.png`;
+
+    // Create HTML elements to display current day weather data
+
+    // Header
+    const cityHeader = document.createElement("div");
+    const currentWeatherCity = document.createElement("h1");
+    const cityName = data.city.name;
+    currentWeatherCity.textContent = cityName; 
+    currentWeatherCity.setAttribute("style", "display: inline-block;"); 
+    cityHeader.appendChild(currentWeatherCity);
+
+    const currentWeatherDateH1 = document.createElement("h1");
+    currentWeatherDateH1.textContent = `(${currentWeatherDate.toLocaleDateString()})`;
+    currentWeatherDateH1.setAttribute("style", "display: inline-block; margin-left: 5px; margin-right: 5px;"); 
+    cityHeader.appendChild(currentWeatherDateH1); 
+
+    const currentWeatherIconImg = document.createElement("img");
+    currentWeatherIconImg.src = currentWeatherIconURL;
+    currentWeatherIconImg.setAttribute("style", "display: inline-block; transform: translateY(15px);");
+    cityHeader.appendChild(currentWeatherIconImg); 
+    currentWeatherDiv.appendChild(cityHeader); 
+
+    const currentWeatherLine = document.createElement("hr"); 
+    currentWeatherDiv.appendChild(currentWeatherLine); 
+
+    const currentWeatherTempP = document.createElement("p");
+    currentWeatherTempP.textContent = `Temp: ${Math.round(currentWeather.main.temp)}°F`;
+    currentWeatherDiv.appendChild(currentWeatherTempP); 
+
+    const currentWeatherWindP = document.createElement("p"); 
+    currentWeatherWindP.textContent = `Wind: ${currentWeather.wind.speed} MPH`;
+    currentWeatherDiv.appendChild(currentWeatherWindP); 
+
+    const currentWeatherHumP = document.createElement("p"); 
+    currentWeatherHumP.textContent = `Humidity: ${currentWeather.main.humidity}%`;
+    currentWeatherDiv.appendChild(currentWeatherHumP); 
+    currentWeatherDiv.setAttribute("style", "padding: 5px;"); 
+
+    // Append current day weather div to the weather results div
+    todayForecast.appendChild(currentWeatherDiv); 
+    todayForecast.setAttribute("style", "display: flex; justify-content: left;"); 
+
+    const forecastHeader = document.createElement("h2"); 
+    forecastHeader.textContent = "5-Day Forecast:"; 
+    forecastHeaderDiv.setAttribute("style", "display: block; text-align: center; margin-top: 10px;"); 
+    forecastHeader.setAttribute("style", "display: block; margin-top: 45px;"); 
+    forecastHeaderDiv.appendChild(forecastHeader); 
 
     // Loop through forecast data and create HTML elements to display
-    for (let i = 0; i < data.list.length; i += 8) {
-      const forecast = data.list[i];
-      const date = new Date(forecast.dt * 1000);
-      const iconURL = `https://openweathermap.org/img/w/${forecast.weather[0].icon}.png`;
-
-      const forecastDiv = document.createElement("div");
-      forecastDiv.classList.add("forecast");
-
-      const dateP = document.createElement("p");
-      dateP.textContent = date.toLocaleDateString();
-      forecastDiv.appendChild(dateP);
-
-      const iconImg = document.createElement("img");
-      iconImg.src = iconURL;
-      forecastDiv.appendChild(iconImg);
-
-      const tempP = document.createElement("p");
-      tempP.textContent = `${Math.round(forecast.main.temp)}°F`;
-      forecastDiv.appendChild(tempP); 
-
-      const windP = document.createElement("p"); 
-      windP.textContent = `Wind: ${forecast.wind.speed} MPH`;
-      forecastDiv.appendChild(windP); 
-
-      const humP = document.createElement("p"); 
-      humP.textContent = `Humidity: \n${forecast.main.humidity}%`;
-      forecastDiv.appendChild(humP); 
-
-      const descP = document.createElement("p");
-      descP.textContent = forecast.weather[0].description;
-      forecastDiv.appendChild(descP);
-
-      weatherResults.appendChild(forecastDiv);
-    }
+    for (let i = 1; i <= 5; i++) {
+      const forecastWeatherDiv = document.createElement("div");
+      forecastWeatherDiv.classList.add("forecast");
+      forecastWeatherDiv.setAttribute("style", "display: block; padding: 5px;");
+  
+      // Get forecast weather data
+      const forecastWeather = data.list[i];
+      const forecastWeatherDate = new Date((forecastWeather.dt + 86400 * i) * 1000); // add 86400 seconds (1 day) for each iteration
+      const forecastWeatherIconURL = `https://openweathermap.org/img/w/${forecastWeather.weather[0].icon}.png`;
+  
+      // Create HTML elements to display forecast weather data
+      const forecastWeatherHeader = document.createElement("h4");
+      forecastWeatherHeader.textContent = forecastWeatherDate.toLocaleDateString();
+      forecastWeatherDiv.appendChild(forecastWeatherHeader);
+  
+      const forecastWeatherIconImg = document.createElement("img");
+      forecastWeatherIconImg.src = forecastWeatherIconURL;
+      forecastWeatherIconImg.setAttribute("style", "display: inline-block; transform: translateY(15px);");
+      forecastWeatherDiv.appendChild(forecastWeatherIconImg); 
+  
+      const forecastWeatherTempP = document.createElement("p");
+      forecastWeatherTempP.textContent = `Temp: ${Math.round(forecastWeather.main.temp)}°F`;
+      forecastWeatherDiv.appendChild(forecastWeatherTempP);
+  
+      const forecastWeatherWindP = document.createElement("p");
+      forecastWeatherWindP.textContent = `Wind: ${forecastWeather.wind.speed} MPH`;
+      forecastWeatherDiv.appendChild(forecastWeatherWindP);
+  
+      const forecastWeatherHumP = document.createElement("p");
+      forecastWeatherHumP.textContent = `Humidity: ${forecastWeather.main.humidity}%`;
+      forecastWeatherDiv.appendChild(forecastWeatherHumP);
+  
+      // Append forecast weather div to the weather results div
+      weatherResults.appendChild(forecastWeatherDiv); 
+    };     
   } 
 });

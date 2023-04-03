@@ -1,16 +1,13 @@
-/* Set a default font family and size */
 body {
   font-family: Arial, sans-serif;
   font-size: 16px; 
   background-color: rgb(146, 205, 245);
-}
+} 
 
-/* Center the h1 heading */
 h1 {
   text-align: center;
 }
 
-/* Style the search form */
 #search-form {
   display: flex;
   justify-content: center;
@@ -35,21 +32,34 @@ button[type="submit"] {
   cursor: pointer;
 }
 
-/* Style the past searches section */
 #past-searches {
   margin: 20px 0;
   width: 10%;
   float: left;
 }
 
-/* Style the weather results section */
+#current-weather {
+  display: block;
+  text-align: left;
+  background-color: white;
+  width: fit-content; 
+  margin-left: auto; 
+  margin-right: auto; 
+  border-radius: 10px;  
+}
+
 #weather-results {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
+} 
+
+.city-info {
+  display: block; 
   width: 90%;
-  float: left;
+  float: left; 
+  transform: translateX(-5.5%); 
 }
 
 .forecast {
