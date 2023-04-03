@@ -6,7 +6,7 @@ The What's the Weather Like Dashboard is a web application that displays a five 
 
 Features
 Five-day forecast: Displays the weather forecast for the next five days, including temperature, humidity, and wind speed.
-Current weather data: Shows the current temperature, humidity, wind speed, and UV index for the searched city.
+Current weather data: Shows the current temperature, humidity, wind speed, and weather condition for the searched city.
 Past search history: Keeps a record of past searches and allows users to revisit the data with just one click.
 User-friendly design: The dashboard is easy to use and navigate, with a clean and intuitive user interface.
 
